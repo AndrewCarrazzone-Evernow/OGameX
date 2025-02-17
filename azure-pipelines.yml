@@ -1,0 +1,21 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo "export PATH=\$PATH:/opt/Fortify_ScanCentral_Client_24.4.0_x64/bin" >> /home/azureuser/.bashrc
+    source ~/.bashrc
+    scancentral -url http://fortify-sast-scancentral-sast-controller.fortify.svc.cluster.local:80/scancentral-ctrl/ -ssctoken 0792f2aa-17a8-46b8-82e1-c45417cac27a start -bt none -upload --application ogamex --application-version main -uptoken 0792f2aa-17a8-46b8-82e1-c45417cac27a
+  displayName: 'Run Fortify SAST scan'
+  workingDirectory: '$(Build.SourcesDirectory)'
